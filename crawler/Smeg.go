@@ -35,9 +35,18 @@ func Smeg() {
 			if !disabled {
 				fmt.Printf("Available: %s for %s\n", name, price)
 				var message = fmt.Sprintf("Available for %s", price)
-				err := beeep.Alert(name, message, "icon.jpg")
+				unwantedCards:= []string{"Zotac", "PNY", "KFA2", "Manli", "Inno3D", "Palit", "Gainward"}
+				var isUnwanted bool
+				for i := 0; i < len(unwantedCards); i++ {
+					if(strings.Contains(name, unwantedCards[i])){
+						isUnwanted=true
+					}
+				}
+				if(!isUnwanted){
+				err := beeep.Alert(name, message, "/icon.png")
 				if err != nil {
 					panic(err)
+				}
 				}
 			} else {
 				fmt.Printf("Not available: %s for %s\n", name, price)
