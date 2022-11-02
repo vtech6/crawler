@@ -2,6 +2,7 @@ package crawler
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -15,6 +16,9 @@ func Smeg() {
 	var disabled bool
 	var price string
 	var name string
+
+	wantedCards :=strings.Split(os.Getenv("WANTED_CARDS"), " ")
+
 	// Find and visit all links
 	c.OnHTML("#content", func(e *colly.HTMLElement) {
 		e.ForEach("div.productGridElement.lg-flex-item.sm-basis-full.lg-basis-25.product-element", func(ind int, subE *colly.HTMLElement) {
@@ -35,14 +39,14 @@ func Smeg() {
 			if !disabled {
 				fmt.Printf("Available: %s for %s\n", name, price)
 				var message = fmt.Sprintf("Available for %s", price)
-				unwantedCards:= []string{"Zotac", "PNY", "KFA2", "Manli", "Inno3D", "Palit", "Gainward"}
-				var isUnwanted bool
-				for i := 0; i < len(unwantedCards); i++ {
-					if(strings.Contains(name, unwantedCards[i])){
-						isUnwanted=true
+
+				var isWanted bool
+				for i := 0; i < len(wantedCards); i++ {
+					if(strings.Contains(name, wantedCards[i])){
+						isWanted=true
 					}
 				}
-				if(!isUnwanted){
+				if(len(wantedCards)==0||isWanted){
 				err := beeep.Alert(name, message, "/icon.png")
 				if err != nil {
 					panic(err)
@@ -55,21 +59,8 @@ func Smeg() {
 
 	})
 
-	// c.OnHTML("strong.sc-1ttlt4t-1.kRYPrq", func(e *colly.HTMLElement) {
-	// 	price = e.Text
-	// })
-
-	// c.OnHTML("button.sc-1olg58b-0.cXWAZg.sc-185g6wq-6.bvMIBV", func(e *colly.HTMLElement) {
-	// 	_, disabled = e.DOM.Attr("disabled")
-	// 	if disabled {
-	// 		fmt.Printf("Not available: %s for %s\n", name, price)
-	// 	} else {
-	// 		fmt.Printf("Available: %s for %s\n", name, price)
-	// 	}
-	// })
-
 	c.Visit("https://www.steg-electronics.ch/de/search?suche=rtx+4090")
-	c.Visit("https://www.steg-electronics.ch/de/search?suche=rtx%204090&p=2")
+	c.Visit("https://www.steg-electronics.ch/de/search?suche=asus+rtx+3090")
 
 	fmt.Println("!!!!!Smeg crawling finished!!!!!\n")
 }
