@@ -5,6 +5,7 @@ import (
 )
 
 func Crawler() {
+	Asus()
 	Smeg()
 	Digitec()
 
